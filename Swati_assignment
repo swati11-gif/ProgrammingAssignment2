@@ -1,0 +1,134 @@
+# makeCacheMatrix(): This function creates a special “matrix” object that can cache its inverse:
+
+makeCacheMatrix <- function(x = matrix()) {
+  i <- NULL
+  set <- function(y) {
+    x <<- y
+    i <<- NULL
+  }
+  get <- function() x
+  setinverse <- function(inverse) i <<- inverse
+  getinverse <- function() i
+  list(set = set, get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
+}
+
+
+# cacheSolve: This function computes the inverse of the special “matrix” returned by makeCacheMatrix above.
+cacheSolve <- function(x, ...) {
+  i <- x$getinverse()
+  if (!is.null(i)) {
+    message("getting cached data")
+    return(i)
+  }
+  data <- x$get()
+  i <- solve(data, ...)
+  x$setinverse(i)
+  i
+  
+}
+#solve(B) - if impossible
+B <- matrix(c(1:4),2,2)
+
+#Return inverse after computation
+B1 <- makeCacheMatrix(B)
+cacheSolve(B1) 
+
+#Return inverse from cache
+cacheSolve(B1)
+
+#cacheSolve
+
+## function(x, ...) {
+##         i <- x$getinverse()
+##         if (!is.null(i)) {
+##                  message("getting cached data")
+##                  return(i)
+##         }
+##         data <- x$get()
+##         i <- solve(data, ...)
+##         x$setinverse(i)
+##         i
+## 
+## }
+## <bytecode: 0x0000000008dde910>
+
+# see the contents of the environment
+as.list(environment(cacheSolve))
+
+## $B1
+## $B1$set
+## function(y) {
+##                 x <<- y
+##                 i <<- NULL
+##   }
+## <environment: 0x0000000007889378>
+## 
+## $B1$get
+## function() x
+## <environment: 0x0000000007889378>
+## 
+## $B1$setinverse
+## function(inverse) i <<- inverse
+## <environment: 0x0000000007889378>
+## 
+## $B1$getinverse
+## function() i
+## <environment: 0x0000000007889378>
+## 
+## 
+## $B
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+## 
+## $makeCacheMatrix
+## function(x = matrix()) {
+##         i <- NULL
+##         set <- function(y) {
+##                 x <<- y
+##                 i <<- NULL
+##   }
+##         get <- function() x
+##         setinverse <- function(inverse) i <<- inverse
+##         getinverse <- function() i
+##         list(set = set, get = get,
+##         setinverse = setinverse,
+##         getinverse = getinverse)
+## }
+## 
+## $cacheSolve
+## function(x, ...) {
+##         i <- x$getinverse()
+##         if (!is.null(i)) {
+##                  message("getting cached data")
+##                  return(i)
+##         }
+##         data <- x$get()
+##         i <- solve(data, ...)
+##         x$setinverse(i)
+##         i
+## 
+## }
+## <bytecode: 0x0000000008dde910>
+
+# re-run cacheSolve()
+B <- matrix(c(1:4),2,2)
+B1 <- makeCacheMatrix(B)
+cacheSolve(B1)
+
+## unenclose(cacheSolve)
+
+## function (x, ...) 
+## {
+##     i <- x$getinverse()
+##     if (!is.null(i)) {
+##         message("getting cached data")
+##         return(i)
+##     }
+##     data <- x$get()
+##     i <- solve(data, ...)
+##     x$setinverse(i)
+##     i
+## }
